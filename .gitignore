@@ -1,0 +1,17 @@
+# IDEs
+.idea/
+.vscode/
+*.iml
+
+# Spring Boot
+spring/target/
+spring/*.log
+
+# React
+react/node_modules/
+react/build/
+react/.env
+
+# Sistema
+Thumbs.db
+.DS_Store

@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 export default function ListarCliente() {
 
-  const UrlBase = "http://localhost:8080/gestion-app/clientes";
+  const UrlBase = "https://serene-nurturing-production.up.railway.app/gestion-app/clientes";
 
   const [clientes, setClientes] = useState([]);
 

@@ -25,7 +25,7 @@ export default function AgregarCliente() {
 
     const onSubmit= async (e)=>{
         e.preventDefault();
-        const urlBase="http://localhost:8080/gestion-app/clientes";
+        const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/clientes";
         await axios.post(urlBase, cliente);
         navegacion("/clientes/listar");
     }

@@ -6,7 +6,7 @@ import { useNavigate , useParams } from 'react-router-dom';
 
 export default function EditarProducto() {
 
-  const urlBase="http://localhost:8080/gestion-app/productos";
+  const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/productos";
 
     let navegacion = useNavigate();
     const { id } = useParams();

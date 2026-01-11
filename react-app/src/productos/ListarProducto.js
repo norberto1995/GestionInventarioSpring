@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 export default function ListarProducto() {
 
-  const UrlBase = "http://localhost:8080/gestion-app/productos";
+  const UrlBase = "https://serene-nurturing-production.up.railway.app/gestion-app/productos";
 
   const [productos, setProductos] = useState([]);
 

@@ -28,7 +28,7 @@ export default function AgregarProducto() {
 
     const onSubmit= async (e)=>{
         e.preventDefault();
-        const urlBase="http://localhost:8080/gestion-app/productos";
+        const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/productos";
         await axios.post(urlBase, producto);
         navegacion("/productos/listar");
     }

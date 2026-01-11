@@ -28,7 +28,7 @@ public class VentaServicioImpl implements VentaServicio{
 
         for (DetalleVenta d : venta.getDetalles()) {
 
-            // 1) relacionar detalle con venta
+            // 1) relacionar detalle con venta cambio git
             d.setVenta(venta);
 
             // 2) obtener producto de BD

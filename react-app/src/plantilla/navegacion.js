@@ -10,7 +10,7 @@ export default function Navegacion() {
   return (
      
 <div className="d-flex flex-column p-3 bg-light" style={{height: "100vh", width: "250px"}}>
-      <h4>Dashboard</h4>
+      <h4>DASHBOARD</h4>
       <hr/>
 
       <ul className="nav nav-pills flex-column mb-2">

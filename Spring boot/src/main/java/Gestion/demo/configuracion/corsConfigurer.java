@@ -12,7 +12,8 @@ public class corsConfigurer implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins(
                         "http://localhost:3000",
-                        "https://gestion-inventario-spring-nkihhmyep-norberto-mirandas-projects.vercel.app"
+                        "https://gestion-inventario-spring-nkihhmyep-norberto-mirandas-projects.vercel.app",
+                        "https://gestion-inventario-spring.vercel.app"
                 )
                 .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
                 .allowedHeaders("*")

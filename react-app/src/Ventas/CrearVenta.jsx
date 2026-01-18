@@ -9,12 +9,12 @@ export default function CrearVenta() {
   const venta = useVenta();
 
   return (
-    <div className="container-fluid p-4">
-      <div className="row">
+    <div className="container-fluid p-3 p-md-4">
+      <div className="row g-3">
 
         {/* IZQUIERDA */}
-        <div className="col-md-4">
-          <div className="card shadow">
+        <div className="col-12 col-md-4">
+          <div className="card shadow h-100">
             <div className="card-body">
 
               <DatosFactura {...venta} />
@@ -25,8 +25,8 @@ export default function CrearVenta() {
         </div>
 
         {/* DERECHA */}
-        <div className="col-md-8">
-          <div className="card shadow">
+        <div className="col-12 col-md-8">
+          <div className="card shadow h-100">
             <div className="card-body">
 
               <TablaDetalle {...venta} />
@@ -40,6 +40,7 @@ export default function CrearVenta() {
     </div>
   );
 }
+
 
 
 

@@ -11,7 +11,7 @@ export default function TotalesFactura({
 }) {
   return (
     <div className="row mt-3">
-      <div className="col-md-6">
+      <div className="col-12 col-md-6 mb-3 mb-md-0">
         <input
           className="form-control mb-2"
           placeholder="Descuento"
@@ -26,7 +26,7 @@ export default function TotalesFactura({
         />
       </div>
 
-      <div className="col-md-6 text-end">
+      <div className="col-12 col-md-6 text-start text-md-end">
         <p>Subtotal: {formatMoney(subtotal)}</p>
         <p>IVA: {formatMoney(totalIva)}</p>
         <p><b>Total: {formatMoney(total)}</b></p>
@@ -35,3 +35,4 @@ export default function TotalesFactura({
     </div>
   );
 }
+

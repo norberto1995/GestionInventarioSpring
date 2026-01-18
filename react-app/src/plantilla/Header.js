@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ toggleMenu }) {
 
   const navigate = useNavigate();
 
@@ -12,24 +12,32 @@ export default function Header() {
 
   return (
     <div
-      className="d-flex align-items-center px-4 text-white"
-      style={{ backgroundColor: "#111827", height: "70px", position: "relative" }}
+      className="d-flex align-items-center px-3 text-white"
+      style={{ backgroundColor: "#111827", height: "70px" }}
     >
-      <h4
-        className="m-0 fw-bold text-uppercase position-absolute start-50 translate-middle-x"
+      {/* BOTÓN HAMBURGUESA SOLO EN MÓVIL */}
+      <button
+        className="btn btn-outline-light d-md-none me-3"
+        onClick={toggleMenu}
       >
+        ☰
+      </button>
+
+      <h4 className="m-0 fw-bold text-uppercase mx-auto">
         Sistema de Gestión
       </h4>
 
       <button
         onClick={logout}
-        className="btn btn-outline-light btn-sm ms-auto"
+        className="btn btn-outline-light btn-sm"
       >
         Cerrar sesión
       </button>
     </div>
   );
 }
+
+
 
 
 

@@ -3,9 +3,6 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 export default function ListarCliente() {
-
-  
-
   const [clientes, setClientes] = useState([]);
   const [clientesFiltrados, setClientesFiltrados] = useState([]);
   const [busqueda, setBusqueda] = useState("");
@@ -19,9 +16,8 @@ export default function ListarCliente() {
     try {
       const respuesta = await api.get("/gestion-app/clientes");
       setClientes(respuesta.data);
-      setClientesFiltrados(respuesta.data); // copia para búsqueda
+      setClientesFiltrados(respuesta.data);
     } catch (error) {
-      console.error("Error cargando clientes", error);
       alert("Error cargando clientes");
     } finally {
       setLoading(false);
@@ -29,43 +25,34 @@ export default function ListarCliente() {
   };
 
   const eliminarCliente = async (id) => {
-    const confirmar = window.confirm("¿Seguro que deseas eliminar este cliente?");
-    if (!confirmar) return;
+    if (!window.confirm("¿Seguro que deseas eliminar este cliente?")) return;
 
-    try {
-      await api.delete(`/gestion-app/clientes/${id}`);
-      const nuevaLista = clientes.filter(c => c.idCliente !== id);
-      setClientes(nuevaLista);
-      setClientesFiltrados(nuevaLista);
-    } catch (error) {
-      alert("No se pudo eliminar el cliente");
-    }
+    await api.delete(`/gestion-app/clientes/${id}`);
+    const nuevaLista = clientes.filter((c) => c.idCliente !== id);
+    setClientes(nuevaLista);
+    setClientesFiltrados(nuevaLista);
   };
 
-  // 🔍 BUSCADOR
   const filtrar = (texto) => {
     setBusqueda(texto);
-
-    const resultado = clientes.filter(cliente =>
-      cliente.nombre.toLowerCase().includes(texto.toLowerCase()) ||
-      cliente.documento.toString().includes(texto)
+    setClientesFiltrados(
+      clientes.filter(
+        (c) =>
+          c.nombre.toLowerCase().includes(texto.toLowerCase()) ||
+          c.documento.toString().includes(texto)
+      )
     );
-
-    setClientesFiltrados(resultado);
   };
 
   return (
-    <div className="container mt-4">
-
-      {/* Encabezado */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <h4>Lista de Clientes</h4>
+    <div className="container-fluid px-3 px-md-5 mt-4">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+        <h4 className="mb-0">Lista de Clientes</h4>
         <Link to="/clientes/agregar" className="btn btn-success">
-          <i className="bi bi-person-plus me-2"></i> Nuevo Cliente
+          Nuevo Cliente
         </Link>
       </div>
 
-      {/* 🔍 Buscador */}
       <div className="mb-3">
         <input
           type="text"
@@ -76,7 +63,6 @@ export default function ListarCliente() {
         />
       </div>
 
-      {/* Tabla */}
       {loading ? (
         <div className="text-center">
           <div className="spinner-border text-primary"></div>
@@ -95,48 +81,37 @@ export default function ListarCliente() {
                 <th className="text-center">Acciones</th>
               </tr>
             </thead>
-
             <tbody>
-              {clientesFiltrados.length === 0 ? (
-                <tr>
-                  <td colSpan="7" className="text-center text-muted">
-                    No se encontraron clientes
+              {clientesFiltrados.map((cliente) => (
+                <tr key={cliente.idCliente}>
+                  <td>{cliente.idCliente}</td>
+                  <td>{cliente.nombre}</td>
+                  <td>{cliente.documento}</td>
+                  <td>{cliente.telefono}</td>
+                  <td>{cliente.direccion}</td>
+                  <td>{cliente.email}</td>
+                  <td className="text-center">
+                    <Link
+                      to={`/clientes/editar/${cliente.idCliente}`}
+                      className="btn btn-primary btn-sm me-2"
+                    >
+                      ✏️
+                    </Link>
+                    <button
+                      className="btn btn-danger btn-sm"
+                      onClick={() => eliminarCliente(cliente.idCliente)}
+                    >
+                      🗑️
+                    </button>
                   </td>
                 </tr>
-              ) : (
-                clientesFiltrados.map(cliente => (
-                  <tr key={cliente.idCliente}>
-                    <td>{cliente.idCliente}</td>
-                    <td>{cliente.nombre}</td>
-                    <td>{cliente.documento}</td>
-                    <td>{cliente.telefono}</td>
-                    <td>{cliente.direccion}</td>
-                    <td>{cliente.email}</td>
-                    <td className="text-center">
-                      <Link
-                        to={`/clientes/editar/${cliente.idCliente}`}
-                        className="btn btn-primary btn-sm me-2"
-                      >
-                        <i className="bi bi-pencil-square"></i>
-                      </Link>
-
-                      <button
-                        onClick={() => eliminarCliente(cliente.idCliente)}
-                        className="btn btn-danger btn-sm"
-                      >
-                        <i className="bi bi-trash"></i>
-                      </button>
-                    </td>
-                  </tr>
-                ))
-              )}
+              ))}
             </tbody>
-
           </table>
         </div>
       )}
-
     </div>
   );
 }
+
 

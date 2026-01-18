@@ -18,48 +18,51 @@ export default function BuscarProductos({
         onChange={(e) => setBusquedaProducto(e.target.value)}
       />
 
-      <table className="table table-sm table-hover">
-        <thead className="table-dark">
-          <tr>
-            <th>Codigo</th>
-            <th>Nombre</th>
-            <th>Precio</th>
-            <th>Cantidad</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          {productosFiltrados.map(p => (
-            <tr key={p.idProducto}>
-              <td>{p.codigo}</td>
-              <td>{p.nombre}</td>
-              <td>{formatMoney(p.precioVenta)}</td>
-              <td>
-                <input
-                  type="number"
-                  min="1"
-                  className="form-control form-control-sm"
-                  style={{ width: "80px" }}
-                  value={cantidades[p.idProducto] || ""}
-                  onChange={(e) =>
-                    setCantidades({
-                      ...cantidades,
-                      [p.idProducto]: e.target.value
-                    })
-                  }
-                />
-              </td>
-              <td>
-                <i
-                  className="bi bi-plus-square text-success"
-                  style={{ cursor: "pointer" }}
-                  onClick={() => agregarProducto(p)}
-                ></i>
-              </td>
+      <div className="table-responsive">
+        <table className="table table-sm table-hover">
+          <thead className="table-dark">
+            <tr>
+              <th>Codigo</th>
+              <th>Nombre</th>
+              <th>Precio</th>
+              <th>Cantidad</th>
+              <th></th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {productosFiltrados.map(p => (
+              <tr key={p.idProducto}>
+                <td>{p.codigo}</td>
+                <td>{p.nombre}</td>
+                <td>{formatMoney(p.precioVenta)}</td>
+                <td>
+                  <input
+                    type="number"
+                    min="1"
+                    className="form-control form-control-sm"
+                    style={{ width: "80px" }}
+                    value={cantidades[p.idProducto] || ""}
+                    onChange={(e) =>
+                      setCantidades({
+                        ...cantidades,
+                        [p.idProducto]: e.target.value
+                      })
+                    }
+                  />
+                </td>
+                <td>
+                  <i
+                    className="bi bi-plus-square text-success"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => agregarProducto(p)}
+                  ></i>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   );
 }
+

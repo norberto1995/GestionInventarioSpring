@@ -31,7 +31,7 @@ export default function DatosFactura({
         />
 
         {busquedaCliente && !clienteSeleccionado && (
-          <div className="list-group position-absolute w-100 shadow">
+          <div className="list-group position-absolute w-100 shadow" style={{ zIndex: 1000 }}>
             {clientesFiltrados.map(c => (
               <button
                 key={c.idCliente}

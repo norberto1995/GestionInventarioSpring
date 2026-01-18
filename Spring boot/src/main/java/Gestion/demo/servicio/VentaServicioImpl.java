@@ -1,79 +1,115 @@
 package Gestion.demo.servicio;
 
-
-import Gestion.demo.modelo.DetalleVenta;
-import Gestion.demo.modelo.Producto;
-import Gestion.demo.modelo.Venta;
+import Gestion.demo.dto.DetalleDTO;
+import Gestion.demo.dto.VentaRequestDTO;
+import Gestion.demo.modelo.*;
+import Gestion.demo.repositorio.ClienteRepositorio;
 import Gestion.demo.repositorio.ProductoRepositorio;
 import Gestion.demo.repositorio.VentaRepositorio;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service
-public class VentaServicioImpl implements VentaServicio{
+public class VentaServicioImpl implements VentaServicio {
 
-    @Autowired
-    private ProductoRepositorio productoRepositorio;
+    private final VentaRepositorio ventaRepo;
+    private final ProductoRepositorio productoRepo;
+    private final ClienteRepositorio clienteRepo;
 
-    @Autowired
-    private VentaRepositorio ventaRepositorio;
+    public VentaServicioImpl(VentaRepositorio ventaRepo,
+                             ProductoRepositorio productoRepo,
+                             ClienteRepositorio clienteRepo) {
+        this.ventaRepo = ventaRepo;
+        this.productoRepo = productoRepo;
+        this.clienteRepo = clienteRepo;
+    }
 
     @Override
     @Transactional
-    public Venta registrarVenta(Venta venta) {
-        double totalVenta = 0.0;
+    public Venta registrarVenta(VentaRequestDTO dto) {
 
-        for (DetalleVenta d : venta.getDetalles()) {
+        Cliente cliente = clienteRepo.findById(dto.clienteId)
+                .orElseThrow(() -> new RuntimeException("Cliente no existe"));
 
-            // 1) relacionar detalle con venta cambio git bien
-            d.setVenta(venta);
+        Venta venta = new Venta();
+        venta.setCliente(cliente);
+        venta.setFecha(new Date());
+        venta.setFormaPago(dto.formaPago);
+        venta.setVendedor(dto.vendedor);
+        venta.setDescuento(dto.descuento);
+        venta.setPago(dto.pago);
 
-            // 2) obtener producto de BD
-            Producto p = productoRepositorio.findById(d.getIdProducto())
+        double subtotal = 0;
+        double totalIva = 0;
+
+        List<DetalleVenta> detalles = new ArrayList<>();
+
+        for (DetalleDTO d : dto.detalles) {
+
+            Producto p = productoRepo.findById(d.productoId)
                     .orElseThrow(() -> new RuntimeException("Producto no existe"));
 
-            // 3) asignar precio del producto
-            d.setPrecioUnitario(p.getPrecioVenta());
+            if (p.getStockActual() < d.cantidad) {
+                throw new RuntimeException("Stock insuficiente para " + p.getNombre());
+            }
 
-            // 4) calcular subtotal
-            double subtotal = p.getPrecioVenta() * d.getCantidad();
-            d.setSubtotal(subtotal);
+            double precio = p.getPrecioVenta();
+            double iva = precio * (p.getIva() / 100);
+            double totalLinea = (precio + iva) * d.cantidad;
 
-            // 5) calcular iva del producto
-            double iva = subtotal * (p.getIva() );
-            d.setIva(iva);
+            subtotal += precio * d.cantidad;
+            totalIva += iva * d.cantidad;
 
-            // 6) acumular total de venta
-            totalVenta += subtotal + iva;
+            p.setStockActual(p.getStockActual() - d.cantidad);
+
+            DetalleVenta dv = new DetalleVenta();
+            dv.setVenta(venta);
+            dv.setProducto(p);
+            dv.setCantidad(d.cantidad);
+            dv.setPrecioUnitario(precio);
+            dv.setIva(iva);
+            dv.setTotal(totalLinea);
+
+            detalles.add(dv);
         }
 
-        // 7) asignar total de la venta
-        venta.setTotal(totalVenta);
+        double total = subtotal + totalIva - dto.descuento;
+        double cambio = dto.pago - total;
 
-        return ventaRepositorio.save(venta);
-}
+        venta.setSubtotal(subtotal);
+        venta.setTotalIva(totalIva);
+        venta.setTotal(total);
+        venta.setCambio(cambio);
+        venta.setDetalles(detalles);
+
+        return ventaRepo.save(venta);
+    }
+
+    // ===============================
+    // CONSULTAS
+    // ===============================
 
     @Override
     public List<Venta> listarVentas() {
-        return ventaRepositorio.findAll();
+        return ventaRepo.findAll();
     }
 
     @Override
     public Venta buscarVentaPorId(Integer idVenta) {
-        return ventaRepositorio.findById(idVenta).orElse(null);
+        return ventaRepo.findById(idVenta).orElse(null);
     }
 
     @Override
     public List<Venta> buscarVentasPorIdCliente(Integer idCliente) {
-        return ventaRepositorio.findByCliente_IdCliente(idCliente);
+        return ventaRepo.findByCliente_IdCliente(idCliente);
     }
 
     @Override
     public List<Venta> buscarVentasPorDocumentoCliente(String documento) {
-        return ventaRepositorio.findByCliente_Documento(documento);
+        return ventaRepo.findByCliente_Documento(documento);
     }
-
 }

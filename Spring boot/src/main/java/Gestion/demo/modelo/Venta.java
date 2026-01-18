@@ -1,11 +1,8 @@
 package Gestion.demo.modelo;
 
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import java.util.Date;
 import java.util.List;
 
@@ -13,8 +10,8 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Venta {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idVenta;
@@ -23,15 +20,21 @@ public class Venta {
     @JoinColumn(name = "id_cliente")
     private Cliente cliente;
 
-    @Temporal(TemporalType.DATE)
     private Date fecha;
 
+    private Double subtotal;
+    private Double totalIva;
     private Double total;
-    private String metodoPago;
-    private String condicionPago;
-    private String estadoPago;
+    private Double descuento;
+    private Double pago;
+    private Double cambio;
 
-    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL, orphanRemoval = true)
+    private String formaPago;
+    private String vendedor;
+
+    @OneToMany(mappedBy = "venta", cascade = CascadeType.ALL)
+    @JsonManagedReference // Permite serializar los detalles sin recursión infinita
     private List<DetalleVenta> detalles;
-
 }
+
+

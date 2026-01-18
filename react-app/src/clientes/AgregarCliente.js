@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../api/axiosConfig";
 import React, {  useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -23,12 +23,17 @@ export default function AgregarCliente() {
         setCliente({...cliente, [e.target.name]: e.target.value});
     }
 
-    const onSubmit= async (e)=>{
-        e.preventDefault();
-        const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/clientes";
-        await axios.post(urlBase, cliente);
-        navegacion("/clientes/listar");
+    const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await api.post("/gestion-app/clientes", cliente);
+      navegacion("/clientes/listar");
+    } catch (error) {
+      alert("No tienes permisos o ocurrió un error");
+      console.error(error);
     }
+  };
         
 
 
@@ -41,7 +46,7 @@ export default function AgregarCliente() {
     <div className='container'>
 
 
-            <div className='container text-center' style={{ margin: "30px" }}>
+            <div className='container text-center' style={{ margin: "10px" }}>
                 <h2>Agregar Cliente</h2>
 
             </div>

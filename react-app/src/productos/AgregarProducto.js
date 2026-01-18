@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../api/axiosConfig";
 import React, {  useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 
@@ -26,12 +26,17 @@ export default function AgregarProducto() {
         setProducto({...producto, [e.target.name]: e.target.value});
     }
 
-    const onSubmit= async (e)=>{
-        e.preventDefault();
-        const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/productos";
-        await axios.post(urlBase, producto);
-        navegacion("/productos/listar");
+    const onSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      await api.post("/gestion-app/productos", producto);
+      navegacion("/productos/listar");
+    } catch (error) {
+      alert("No tienes permisos o ocurrió un error");
+      console.error(error);
     }
+  };
         
 
 

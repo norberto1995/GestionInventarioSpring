@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class ProductoControlador {
     private static final Logger logger = LoggerFactory.getLogger(ProductoControlador.class);
     @Autowired
     private ProductoServicio productoServicio;
+
 
     @GetMapping("/productos")
     public List<Producto> obtenerProductos(){
@@ -42,13 +44,14 @@ public class ProductoControlador {
         return ResponseEntity.ok(producto);
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/productos")
     public Producto agregarProducto (@RequestBody Producto producto){
         logger.info("cliente a agregar" + producto);
         return productoServicio.guardarProducto(producto);
 
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/productos/{id}")
     public ResponseEntity<Producto> actualizarProducto(@PathVariable Integer id , @RequestBody Producto productoRecibido){
 
@@ -67,7 +70,7 @@ public class ProductoControlador {
             return ResponseEntity.ok(producto);
 
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/productos/{id}")
     public ResponseEntity<Map<String , Boolean>>
     eliminarProducto(@PathVariable Integer id){

@@ -1,11 +1,11 @@
 package Gestion.demo.servicio;
 
+import Gestion.demo.dto.VentaRequestDTO;
 import Gestion.demo.modelo.Venta;
-
 import java.util.List;
 
 public interface VentaServicio {
-    Venta registrarVenta(Venta venta);
+    Venta registrarVenta(VentaRequestDTO dto);
 
     List<Venta> listarVentas();
 

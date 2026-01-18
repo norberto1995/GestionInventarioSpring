@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../api/axiosConfig";
 import React, {  useEffect, useState } from 'react'
 import { useNavigate , useParams } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ import { useNavigate , useParams } from 'react-router-dom';
 
 export default function EditarCliente() {
 
-  const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/clientes";
+  
 
     let navegacion = useNavigate();
     const { id } = useParams();
@@ -21,13 +21,20 @@ const [cliente, setCliente] = useState({
 const{ nombre, documento, telefono, direccion, email} = cliente;
 
 useEffect(() => {
-    cargarCliente();
-}, [])
-
+    
 const cargarCliente = async () => {
-    const resultado = await axios.get(`${urlBase}/${id}`);
+    const resultado = await api.get(`/gestion-app/clientes/${id}`);
     setCliente(resultado.data);
-}
+
+    };
+    cargarCliente();
+
+}, [id]);
+
+
+
+
+
 const onInputChange=(e)=>{
     setCliente({...cliente, [e.target.name]: e.target.value});
 }
@@ -35,7 +42,7 @@ const onInputChange=(e)=>{
 const onSubmit= async (e)=>{
     e.preventDefault();
     
-    await axios.put(`${urlBase}/${id}`, cliente);
+    await api.put(`/gestion-app/clientes/${id}`, cliente);
     navegacion("/clientes/listar");
 }
 

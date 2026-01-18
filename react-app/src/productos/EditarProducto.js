@@ -1,4 +1,4 @@
-import axios from 'axios';
+import api from "../api/axiosConfig";
 import React, {  useEffect, useState } from 'react'
 import { useNavigate , useParams } from 'react-router-dom';
 
@@ -6,7 +6,7 @@ import { useNavigate , useParams } from 'react-router-dom';
 
 export default function EditarProducto() {
 
-  const urlBase="https://serene-nurturing-production.up.railway.app/gestion-app/productos";
+  
 
     let navegacion = useNavigate();
     const { id } = useParams();
@@ -25,13 +25,16 @@ const [producto, setProducto] = useState({
 const{ nombre, codigo, descripcion, precioCompra, precioVenta, stockActual, stockMinimo, iva} = producto;
 
 useEffect(() => {
-    cargarProducto();
-}, [])
 
 const cargarProducto = async () => {
-    const resultado = await axios.get(`${urlBase}/${id}`);
+   const resultado = await api.get(`/gestion-app/productos/${id}`);
     setProducto(resultado.data);
-}
+};
+
+    cargarProducto();
+}, [id])
+
+
 const onInputChange=(e)=>{
     setProducto({...producto, [e.target.name]: e.target.value});
 }
@@ -39,7 +42,7 @@ const onInputChange=(e)=>{
 const onSubmit= async (e)=>{
     e.preventDefault();
 
-    await axios.put(`${urlBase}/${id}`, producto);
+    await api.put(`/gestion-app/productos/${id}`, producto);
     navegacion("/productos/listar");
 }
 

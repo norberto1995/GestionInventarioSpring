@@ -1,32 +1,31 @@
 package Gestion.demo.modelo;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class DetalleVenta {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idDetalle;
 
-    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "id_venta")
+    @JsonBackReference // Evita serialización infinita
     private Venta venta;
 
-    private Integer idProducto;
+    @ManyToOne
+    @JoinColumn(name = "id_producto")
+    private Producto producto;
+
     private Integer cantidad;
     private Double precioUnitario;
-    private Double subtotal;
     private Double iva;
+    private Double total;
 }
+

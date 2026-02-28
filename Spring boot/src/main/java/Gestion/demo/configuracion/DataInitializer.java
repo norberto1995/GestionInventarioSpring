@@ -35,6 +35,27 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+
+        // Verificamos si el admin ya existe para no duplicarlo
+        if (usuarioRepo.findByUsername("vendedor").isEmpty()) {
+
+            Usuario vendedor = new Usuario();
+            vendedor.setUsername("vendedor");
+            // Usamos tu PasswordEncoder para que la clave sea compatible
+            vendedor.setPassword(passwordEncoder.encode("1234"));
+            // Usamos tu Enum Rol correctamente
+            vendedor.setRol(Rol.ADMIN);
+            vendedor.setActivo(true);
+
+            usuarioRepo.save(vendedor);
+
+            System.out.println("--------------------------------------");
+            System.out.println("USUARIO vendedor CREADO AUTOMÁTICAMENTE");
+            System.out.println("Username: admin | Password: 1234");
+            System.out.println("--------------------------------------");
+
+        }
+
         // Verificamos si el admin ya existe para no duplicarlo
         if (usuarioRepo.findByUsername("admin").isEmpty()) {
 
@@ -52,9 +73,6 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("USUARIO ADMIN CREADO AUTOMÁTICAMENTE");
             System.out.println("Username: admin | Password: 1234");
             System.out.println("--------------------------------------");
-
-
-
 
         }
 

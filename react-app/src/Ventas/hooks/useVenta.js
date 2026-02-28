@@ -22,6 +22,8 @@ export default function useVenta() {
   const [formaPago, setFormaPago] = useState("Efectivo");
   const [vendedor, setVendedor] = useState("Juan");
 
+  const [loadingFactura, setLoadingFactura] = useState(false);
+
   useEffect(() => {
     cargarDatos();
   }, []);
@@ -94,31 +96,32 @@ export default function useVenta() {
       }))
     };
 
-     try {
-    const respuesta = await registrarVentaApi(ventaDTO);
-    const ventaCreada = respuesta.data; // <-- esta es la venta completa con detalles
+    try {
+      setLoadingFactura(true);
 
-    alert("Venta registrada");
+      const respuesta = await registrarVentaApi(ventaDTO);
+      const ventaCreada = respuesta.data;
 
-    // Limpiar formulario
-    setDetalleFactura([]);
-    setPago("");
-    setDescuento("");
-    setClienteSeleccionado(null);
+      setDetalleFactura([]);
+      setPago("");
+      setDescuento("");
+      setClienteSeleccionado(null);
 
-    return ventaCreada; // <-- devolver para imprimir
-  } catch (error) {
-    console.error(error);
-    alert("Error al registrar la venta");
-  } 
+      return ventaCreada;
 
+    } catch (error) {
+      console.error(error);
+      alert("Error al registrar la venta");
+    } finally {
+      setLoadingFactura(false);
+    }
   };
 
-    const formatMoney = (valor) =>
-  new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP"
-  }).format(valor);
+  const formatMoney = (valor) =>
+    new Intl.NumberFormat("es-CO", {
+      style: "currency",
+      currency: "COP"
+    }).format(valor);
 
   return {
     productosFiltrados,
@@ -126,36 +129,29 @@ export default function useVenta() {
     detalleFactura,
     cantidades,
     setCantidades,
-
     busquedaProducto,
     setBusquedaProducto,
     busquedaCliente,
     setBusquedaCliente,
-
     clienteSeleccionado,
     setClienteSeleccionado,
-
     formaPago,
     setFormaPago,
     vendedor,
     setVendedor,
-
     descuento,
     setDescuento,
     pago,
     setPago,
-
     subtotal,
     totalIva,
     total,
     cambio,
-
     agregarProducto,
     eliminarProducto,
     registrarVenta,
-    formatMoney 
-
-  
-
+    loadingFactura,
+    formatMoney
   };
 }
+

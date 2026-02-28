@@ -1,0 +1,35 @@
+/* --- Mejora de Inputs para Modo Claro Suave --- */
+[data-bs-theme='light'] .form-control, 
+[data-bs-theme='light'] .form-select {
+  border-color: #dee2e6; /* Borde más claro */
+  background-color: #ffffff;
+  box-shadow: inset 0 1px 2px rgba(0,0,0,0.03); /* Sombra interna casi imperceptible */
+  transition: all 0.2s ease-in-out;
+}
+
+/* Efecto al hacer clic (Focus) más estético */
+[data-bs-theme='light'] .form-control:focus,
+[data-bs-theme='light'] .form-select:focus {
+  border-color: #a5caff; /* Azul muy suave */
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.08); /* Glow minimalista */
+  background-color: #fff;
+}
+
+
+
+[data-bs-theme='dark'] .form-control:focus {
+  background-color: rgba(255, 255, 255, 0.08);
+  border-color: var(--bs-primary);
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+}
+
+[data-bs-theme='dark'] .card {
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  background-color: #1a1d21; /* Un gris casi negro muy elegante */
+}
+
+.stat-card-hover:hover {
+  transform: translateY(-5px);
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.1) !important;
+}

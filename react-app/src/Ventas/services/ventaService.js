@@ -10,3 +10,6 @@ export const obtenerClientes = () =>
 export const registrarVentaApi = (ventaDTO) =>
   api.post("/gestion-app/ventas", ventaDTO);
 
+// Agrega esto a tu ventaService.js
+export const obtenerVentas = () => 
+  api.get("/gestion-app/ventas"); // Asumiendo que este es el endpoint de tu historial

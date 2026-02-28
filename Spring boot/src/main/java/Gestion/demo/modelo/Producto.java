@@ -1,32 +1,45 @@
 package Gestion.demo.modelo;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Producto {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer idProducto;
-    String codigo;
-    String nombre;
-    String descripcion;
-    Double precioCompra;
-    Double precioVenta;
-    int stockActual;
-    int stockMinimo;
-    Double iva;
+    private Integer idProducto;
 
+    private String codigo;
+    private String nombre;
+    private String descripcion;
+
+    private Double precioCompra;
+
+    // Precio final (IVA incluido)
+    private Double precioVenta;
+
+    // Porcentaje IVA (ej: 19)
+    private Double iva;
+
+    private int stockActual;
+    private int stockMinimo;
+
+    // 🧾 Datos fiscales
+    @ManyToOne
+    @JoinColumn(name = "unit_measure_id")
+    private UnidadMedida unidadMedida;
+
+
+    private Integer tributeId;
+    private Integer standardCodeId;
 }
+
+
+
+
+
+

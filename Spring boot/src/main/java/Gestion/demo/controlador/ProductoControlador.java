@@ -1,9 +1,12 @@
 package Gestion.demo.controlador;
 
 
+import Gestion.demo.dto.ProductoDTO;
 import Gestion.demo.exepcion.RecurosNoEncontradoExepcion;
 import Gestion.demo.modelo.Cliente;
 import Gestion.demo.modelo.Producto;
+import Gestion.demo.modelo.UnidadMedida;
+import Gestion.demo.repositorio.UnidadMedidaRepositorio;
 import Gestion.demo.servicio.ProductoServicio;
 import Gestion.demo.servicio.ProductoServicioImpl;
 import org.slf4j.Logger;
@@ -22,9 +25,20 @@ import java.util.Map;
 @CrossOrigin(value = "http://localhost:3000")
 public class ProductoControlador {
 
-    private static final Logger logger = LoggerFactory.getLogger(ProductoControlador.class);
-    @Autowired
-    private ProductoServicio productoServicio;
+
+
+    private static final Logger logger =
+            LoggerFactory.getLogger(ProductoControlador.class);
+
+    private final ProductoServicio productoServicio;
+    private final UnidadMedidaRepositorio unidadMedidaRepositorio;
+
+    public ProductoControlador(ProductoServicio productoServicio,
+                               UnidadMedidaRepositorio unidadMedidaRepositorio) {
+        this.productoServicio = productoServicio;
+        this.unidadMedidaRepositorio = unidadMedidaRepositorio;
+    }
+
 
 
     @GetMapping("/productos")
@@ -46,8 +60,27 @@ public class ProductoControlador {
 
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/productos")
-    public Producto agregarProducto (@RequestBody Producto producto){
-        logger.info("cliente a agregar" + producto);
+    public Producto agregarProducto (@RequestBody ProductoDTO dto){
+        logger.info("´producto a agregar" + dto);
+        System.out.println(dto + "para ver que llega del fronend");
+
+        Producto producto = new Producto();
+        producto.setCodigo(dto.getCodigo());
+        producto.setNombre(dto.getNombre());
+        producto.setDescripcion(dto.getDescripcion());
+        producto.setPrecioCompra(dto.getPrecioCompra());
+        producto.setPrecioVenta(dto.getPrecioVenta());
+        producto.setStockActual(dto.getStockActual());
+        producto.setStockMinimo(dto.getStockMinimo());
+        producto.setIva(dto.getIva());
+
+        UnidadMedida unidad = unidadMedidaRepositorio.findById(dto.getUnitMeasureId())
+                .orElseThrow(() -> new RuntimeException("Unidad no encontrada"));
+
+        producto.setUnidadMedida(unidad);
+        producto.setTributeId(dto.getTributeId());
+        producto.setStandardCodeId(dto.getStandardCodeId());
+
         return productoServicio.guardarProducto(producto);
 
     }
@@ -66,7 +99,23 @@ public class ProductoControlador {
             producto.setStockActual(productoRecibido.getStockActual());
             producto.setStockMinimo(productoRecibido.getStockMinimo());
             producto.setIva(productoRecibido.getIva());
-            productoServicio.guardarProducto(producto);
+
+        // 🔥 CORRECTO: buscar la unidad antes de asignar
+        if (productoRecibido.getUnidadMedida() != null) {
+            Integer unidadId = productoRecibido.getUnidadMedida().getId();
+
+            UnidadMedida unidad = unidadMedidaRepositorio.findById(unidadId)
+                    .orElseThrow(() -> new RuntimeException("Unidad no encontrada"));
+
+            producto.setUnidadMedida(unidad);
+        }
+        producto.setTributeId(productoRecibido.getTributeId());
+        producto.setStandardCodeId(productoRecibido.getStandardCodeId());
+
+
+        productoServicio.guardarProducto(producto);
+
+
             return ResponseEntity.ok(producto);
 
     }

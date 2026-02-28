@@ -19,7 +19,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import java.util.List;
 
 @Configuration
-@EnableMethodSecurity   // 🔐 habilita @PreAuthorize
+@EnableMethodSecurity   //  habilita @PreAuthorize
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
@@ -28,7 +28,7 @@ public class SecurityConfig {
         this.jwtFilter = jwtFilter;
     }
 
-    // 🔐 CADENA DE SEGURIDAD
+    //  CADENA DE SEGURIDAD
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -44,7 +44,7 @@ public class SecurityConfig {
 
                 // 🔹 AUTORIZACIÓN
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**").permitAll()
+                        .requestMatchers("/auth/**",  "/factus/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

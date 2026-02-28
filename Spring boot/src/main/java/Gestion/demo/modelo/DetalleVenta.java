@@ -16,16 +16,37 @@ public class DetalleVenta {
 
     @ManyToOne
     @JoinColumn(name = "id_venta")
-    @JsonBackReference // Evita serialización infinita
+    @JsonBackReference
     private Venta venta;
 
     @ManyToOne
     @JoinColumn(name = "id_producto")
     private Producto producto;
 
-    private Integer cantidad;
+    private Double cantidad;
+
+    // Precio unitario final (IVA incluido)
     private Double precioUnitario;
-    private Double iva;
-    private Double total;
+
+    // % descuento aplicado
+    private Double descuento;
+
+    // Resultado fiscal
+    private Double valorIva;
+    private Double totalLinea;
+
+    // 🧾 Snapshot fiscal (copiado del producto al momento de vender)
+    private Integer unitMeasureId;
+    private Integer standardCodeId;
+    private Integer tributeId;
+    private Boolean isExcluded;
+    private Double taxRate;
 }
+
+
+
+
+
+
+
 

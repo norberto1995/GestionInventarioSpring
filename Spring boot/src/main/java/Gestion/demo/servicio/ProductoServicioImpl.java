@@ -1,5 +1,6 @@
 package Gestion.demo.servicio;
 
+import Gestion.demo.dto.ProductoDTO;
 import Gestion.demo.modelo.Producto;
 import Gestion.demo.repositorio.ProductoRepositorio;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,8 +25,20 @@ public class ProductoServicioImpl implements ProductoServicio {
 
     @Override
     public Producto guardarProducto(Producto producto) {
+
+
+
+        if (producto.getStandardCodeId() == null) {
+            producto.setStandardCodeId(1);
+        }
+
+        if (producto.getTributeId() == null) {
+            producto.setTributeId(1);
+        }
+
         return productoRepositorio.save(producto);
     }
+
 
     @Override
     public void eliminarProducto(Producto producto) {

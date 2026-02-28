@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://serene-nurturing-production.up.railway.app",
+  baseURL: "http://localhost:8080",
 });
 
 api.interceptors.request.use(
@@ -19,12 +19,21 @@ api.interceptors.request.use(
 api.interceptors.response.use(
   res => res,
   err => {
-    if (err.response?.status === 401) {
-      localStorage.clear();
+    const originalRequest = err.config;
+
+    // 🔥 No interceptar errores del login
+    if (
+      err.response?.status === 401 &&
+      !originalRequest.url.includes("/auth/login")
+    ) {
+      localStorage.removeItem("token");
+      localStorage.removeItem("rol");
       window.location.href = "/login";
     }
+
     return Promise.reject(err);
   }
 );
+
 
 export default api;

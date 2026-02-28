@@ -18,6 +18,7 @@ export default function ListarCliente() {
       setClientes(respuesta.data);
       setClientesFiltrados(respuesta.data);
     } catch (error) {
+      console.error(error);
       alert("Error cargando clientes");
     } finally {
       setLoading(false);
@@ -27,21 +28,30 @@ export default function ListarCliente() {
   const eliminarCliente = async (id) => {
     if (!window.confirm("¿Seguro que deseas eliminar este cliente?")) return;
 
-    await api.delete(`/gestion-app/clientes/${id}`);
-    const nuevaLista = clientes.filter((c) => c.idCliente !== id);
-    setClientes(nuevaLista);
-    setClientesFiltrados(nuevaLista);
+    try {
+      await api.delete(`/gestion-app/clientes/${id}`);
+
+      const nuevaLista = clientes.filter((c) => c.idCliente !== id);
+      setClientes(nuevaLista);
+      setClientesFiltrados(nuevaLista);
+
+    } catch (error) {
+      console.error(error);
+      alert("Error eliminando cliente");
+    }
   };
 
   const filtrar = (texto) => {
     setBusqueda(texto);
-    setClientesFiltrados(
-      clientes.filter(
-        (c) =>
-          c.nombre.toLowerCase().includes(texto.toLowerCase()) ||
-          c.documento.toString().includes(texto)
-      )
+
+    const textoLower = texto.toLowerCase();
+
+    const filtrados = clientes.filter((c) =>
+      (c.nombre?.toLowerCase().includes(textoLower)) ||
+      (c.documento?.toString().includes(texto))
     );
+
+    setClientesFiltrados(filtrados);
   };
 
   return (
@@ -82,30 +92,38 @@ export default function ListarCliente() {
               </tr>
             </thead>
             <tbody>
-              {clientesFiltrados.map((cliente) => (
-                <tr key={cliente.idCliente}>
-                  <td>{cliente.idCliente}</td>
-                  <td>{cliente.nombre}</td>
-                  <td>{cliente.documento}</td>
-                  <td>{cliente.telefono}</td>
-                  <td>{cliente.direccion}</td>
-                  <td>{cliente.email}</td>
-                  <td className="text-center">
-                    <Link
-                      to={`/clientes/editar/${cliente.idCliente}`}
-                      className="btn btn-primary btn-sm me-2"
-                    >
-                      ✏️
-                    </Link>
-                    <button
-                      className="btn btn-danger btn-sm"
-                      onClick={() => eliminarCliente(cliente.idCliente)}
-                    >
-                      🗑️
-                    </button>
+              {clientesFiltrados.length > 0 ? (
+                clientesFiltrados.map((cliente) => (
+                  <tr key={cliente.idCliente}>
+                    <td>{cliente.idCliente}</td>
+                    <td>{cliente.nombre}</td>
+                    <td>{cliente.documento}</td>
+                    <td>{cliente.telefono}</td>
+                    <td>{cliente.direccion}</td>
+                    <td>{cliente.email}</td>
+                    <td className="text-center">
+                      <Link
+                        to={`/clientes/editar/${cliente.idCliente}`}
+                        className="btn btn-primary btn-sm me-2"
+                      >
+                        ✏️
+                      </Link>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => eliminarCliente(cliente.idCliente)}
+                      >
+                        🗑️
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="7" className="text-center">
+                    No hay resultados
                   </td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
         </div>
@@ -113,5 +131,4 @@ export default function ListarCliente() {
     </div>
   );
 }
-
 

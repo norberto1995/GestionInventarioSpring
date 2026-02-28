@@ -1,28 +1,38 @@
 package Gestion.demo.modelo;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import jakarta.persistence.*;
+import lombok.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Integer idCliente ;
-    String nombre ;
-    String documento;
-    String telefono;
-    String email;
-    String direccion;
+    private Integer idCliente;
+
+    private String nombre;
+    private String documento;
+    private String telefono;
+    private String email;
+    private String direccion;
+    private Integer dv;
+
+    private Integer identificationDocumentId;
+    private Integer legalOrganizationId;
+    private Integer tributeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "municipality_id", nullable = false)
+    private Municipio municipio;
 }
+
+
+
+
+
+
+
+

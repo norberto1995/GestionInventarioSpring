@@ -1,5 +1,6 @@
 package Gestion.demo;
 
+import Gestion.demo.factus.service.FactusAuthService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

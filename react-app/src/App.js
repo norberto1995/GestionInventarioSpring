@@ -1,4 +1,7 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { isTokenExpired } from "./utils/auth";
+
 import Login from "./auth/Login";
 import ProtectedRoute from "./auth/ProtectedRoute";
 import LayoutPrivado from "./layout/LayoutPrivado";
@@ -18,11 +21,23 @@ import ListarUsuarios from "./usuarios/ListarUsuarios";
 import EditarUsuario from "./usuarios/EditarUsuario";
 import ListarVentas from "./Ventas/ListarVentas";
 
-
-
+import Dashboard from "./pages/Dashboard";  
 
 function App() {
-  const token = localStorage.getItem("token");
+
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    if (token && !isTokenExpired(token)) {
+      setIsAuthenticated(true);
+    } else {
+      localStorage.removeItem("token");
+      localStorage.removeItem("rol");
+      setIsAuthenticated(false);
+    }
+  }, []);
 
   return (
     <BrowserRouter>
@@ -32,7 +47,9 @@ function App() {
         <Route
           path="/"
           element={
-            token ? <Navigate to="/productos/listar" /> : <Navigate to="/login" />
+            isAuthenticated
+              ? <Navigate to="/dashboard" />
+              : <Navigate to="/login" />
           }
         />
 
@@ -48,6 +65,9 @@ function App() {
             </ProtectedRoute>
           }
         >
+         {/* DASHBOARD (Página de inicio al entrar) */}
+          <Route path="dashboard" element={<Dashboard />} />
+
           {/* CLIENTES */}
           <Route path="clientes/listar" element={<ListarCliente />} />
           <Route path="clientes/agregar" element={<AgregarCliente />} />
@@ -60,13 +80,16 @@ function App() {
 
           {/* VENTAS */}
           <Route path="venta/crear" element={<CrearVenta />} />
-          <Route path="venta/listar" element={<ListarVentas/>}/>
+          <Route path="venta/listar" element={<ListarVentas />} />
 
-          {/* USUARIOS (SOLO ADMIN EN BACKEND) */}
+          {/* USUARIOS */}
           <Route path="usuarios/crear" element={<CrearUsuario />} />
-
           <Route path="usuarios/listar" element={<ListarUsuarios />} />
           <Route path="usuarios/editar/:id" element={<EditarUsuario />} />
+
+
+{/* Redirección por defecto dentro del sistema privado */}
+          <Route path="*" element={<Navigate to="/dashboard" replace />} /> 
         </Route>
 
       </Routes>
@@ -75,6 +98,7 @@ function App() {
 }
 
 export default App;
+
 
 
 

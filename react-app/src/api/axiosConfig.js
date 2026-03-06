@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://gestioninventariospring-production.up.railway.app",
+  baseURL: "https://gestioninventariospring.onrender.com",
 });
 
 api.interceptors.request.use(

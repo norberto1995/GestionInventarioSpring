@@ -29,7 +29,7 @@ export default function Login() {
       localStorage.setItem("token", res.data.token);
       localStorage.setItem("rol", res.data.rol);
 
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError("Credenciales inválidas. Por favor intente de nuevo.");
     } finally {

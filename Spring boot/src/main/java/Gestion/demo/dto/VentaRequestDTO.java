@@ -13,7 +13,7 @@ public class VentaRequestDTO {
 
     // Comerciales
 
-    private Double descuento;
+    private Double descuento;  // por ahora no estara disponible esta opcion
     private Double totalRecibido;
 
     private List<DetalleDTO> detalles;
@@ -22,7 +22,7 @@ public class VentaRequestDTO {
 
     private String paymentForm;        // 1 = contado, 2 = crédito
     private String paymentMethodCode;  // 10 = efectivo, etc
-    private LocalDate paymentDueDate;      // obligatorio si es crédito
+    private LocalDate paymentDueDate;      // obligatorio si es crédito fecha vencimiento
     private String observation;        // opcional
 }
 

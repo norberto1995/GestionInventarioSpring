@@ -1,27 +1,36 @@
-export default function TotalesFactura({ subtotal, totalIva, total, cambio, descuento, setDescuento, pago, setPago, formatMoney, darkMode }) {
+export default function TotalesFactura({ 
+  subtotal, totalIva, total, cambio, 
+  pago, setPago, formatMoney, darkMode 
+}) {
+  const pagoNum = Number(pago) || 0;
+  const pagoInsuficiente = pagoNum > 0 && pagoNum < total;
+
   const labelClass = `small fw-bold ${darkMode ? 'text-info opacity-75' : 'text-muted'}`;
   
   return (
     <div className="row g-4 align-items-center">
       <div className="col-md-6">
         <div className="row g-3">
-
-            {/* pendiente descuento  
-           
-          <div className="col-6">
-            <label className={labelClass}>Descuento</label>
-            <div className="input-group input-group-sm">
-              <span className="input-group-text bg-transparent border-end-0">$</span>
-              <input className="form-control form-control-sm border-start-0 shadow-none" type="number" value={descuento} onChange={e => setDescuento(e.target.value)} />
-            </div>
-          </div> */}
-
-          <div className="col-6">
+          <div className="col-12">
             <label className={labelClass}>Efectivo Recibido</label>
-            <div className="input-group input-group-sm">
-              <span className="input-group-text bg-primary bg-opacity-10 border-primary border-end-0 text-primary">$</span>
-              <input className="form-control form-control-sm border-primary border-start-0 shadow-none fw-bold" type="number" value={pago} onChange={e => setPago(e.target.value)} />
+            <div className="input-group">
+              <span className={`input-group-text bg-transparent ${pagoInsuficiente ? 'border-danger text-danger' : 'border-primary text-primary'}`}>
+                <i className="bi bi-cash-stack"></i>
+              </span>
+              <input 
+                className={`form-control form-control-lg fw-bold shadow-none ${pagoInsuficiente ? 'border-danger text-danger' : 'border-primary'}`} 
+                type="number" 
+                value={pago} 
+                onChange={e => setPago(e.target.value)}
+                placeholder="0.00"
+              />
             </div>
+            {pagoInsuficiente && (
+              <div className="text-danger extra-small fw-bold mt-1 animate__animated animate__headShake">
+                <i className="bi bi-exclamation-circle-fill me-1"></i>
+                El monto debe ser mayor o igual al total
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -36,12 +45,16 @@ export default function TotalesFactura({ subtotal, totalIva, total, cambio, desc
             <span>Impuestos (IVA):</span>
             <span>{formatMoney(totalIva)}</span>
           </div>
+          
           <div className="d-flex justify-content-between align-items-center pt-3 border-top border-opacity-10">
             <span className="fw-bold h5 mb-0 text-body">TOTAL A PAGAR:</span>
-            <span className="h2 mb-0 fw-bolder text-primary">{formatMoney(total)}</span>
+            <span className={`h2 mb-0 fw-bolder ${pagoInsuficiente ? 'text-danger' : 'text-primary'}`}>
+              {formatMoney(total)}
+            </span>
           </div>
-          {pago > 0 && (
-            <div className="d-flex justify-content-between mt-3 pt-3 border-top border-dashed">
+
+          {pagoNum >= total && pagoNum > 0 && (
+            <div className="d-flex justify-content-between mt-3 pt-3 border-top border-dashed animate__animated animate__fadeIn">
               <span className="small fw-bold text-success opacity-75">SU CAMBIO:</span>
               <span className="h5 mb-0 fw-bold text-success">{formatMoney(cambio)}</span>
             </div>
@@ -51,4 +64,3 @@ export default function TotalesFactura({ subtotal, totalIva, total, cambio, desc
     </div>
   );
 }
-

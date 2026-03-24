@@ -1,6 +1,6 @@
 export default function DatosFactura({
   busquedaCliente, setBusquedaCliente, clientesFiltrados, clienteSeleccionado,
-  setClienteSeleccionado, formaPago, setFormaPago, vendedor, setVendedor,
+  setClienteSeleccionado, formaPago, setFormaPago, 
   registrarVenta, loadingFactura, darkMode
 }) {
 
@@ -56,14 +56,7 @@ export default function DatosFactura({
             <option>Transferencia</option>
           </select>
         </div>
-        <div className="col-6">
-          <label className={`form-label small fw-bold ${darkMode ? 'text-info opacity-75' : 'text-muted'}`}>Vendedor</label>
-          <select className={selectClass} value={vendedor} onChange={e => setVendedor(e.target.value)} disabled={loadingFactura}>
-            <option>Juan</option>
-            <option>Carlos</option>
-            <option>Pedro</option>
-          </select>
-        </div>
+     
       </div>
 
       <button

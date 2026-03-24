@@ -31,8 +31,24 @@ export default function Login() {
 
       navigate("/dashboard");
     } catch (err) {
-      setError("Credenciales inválidas. Por favor intente de nuevo.");
-    } finally {
+
+  console.log("ERROR COMPLETO:", err);
+  console.log("RESPONSE:", err.response);
+  console.log("REQUEST:", err.request);
+
+  if (err.response) {
+
+    if (err.response.status === 401 || err.response.status === 403) {
+      setError("Usuario o contraseña incorrectos");
+    } else {
+      setError("Error del servidor");
+    }
+
+  } else if (err.request) {
+    setError("No se pudo conectar con el servidor");
+  }
+
+} finally {
       setLoading(false);
     }
   };
@@ -139,7 +155,7 @@ export default function Login() {
 
           {/* FOOTER */}
           <div className="text-center mt-5 text-white-50 extra-small">
-            <small>© 2026 Admin Panel • V 2.0.4</small>
+            <small>© 2026 Admin Nmiranda • V 2.0.4</small>
           </div>
         </div>
       </div>

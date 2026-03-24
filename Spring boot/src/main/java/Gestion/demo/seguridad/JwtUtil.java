@@ -30,7 +30,7 @@ public class JwtUtil {
     public String generarToken(String username, String rol) {
 
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", "ROLE_" + rol); // 🔥 IMPORTANTE
+        claims.put("role", "ROLE_" + rol); //
 
         return Jwts.builder()
                 .setClaims(claims)
@@ -39,7 +39,7 @@ public class JwtUtil {
                 .setExpiration(
                         new Date(System.currentTimeMillis() + EXPIRATION_TIME)
                 )
-                .signWith(key) // ✅ AQUÍ ESTABA EL ERROR
+                .signWith(key)
                 .compact();
     }
 

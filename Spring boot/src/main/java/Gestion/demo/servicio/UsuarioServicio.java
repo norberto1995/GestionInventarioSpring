@@ -10,13 +10,13 @@ public interface UsuarioServicio {
 
     Usuario crearUsuario(UsuarioRequestDTO dto);
 
-    Usuario actualizarUsuario(Long id, UsuarioUpdateDTO dto);
+    Usuario actualizarUsuario(Integer id, UsuarioUpdateDTO dto);
 
-    void eliminarUsuario(Long id);
+    void eliminarUsuario(Integer id);
 
     Usuario buscarPorUsername(String username);
 
-    Usuario buscarPorId(Long id);
+    Usuario buscarPorId(Integer id);
 
     List<Usuario> listarUsuarios();
 }

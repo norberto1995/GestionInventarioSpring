@@ -31,11 +31,12 @@ public class Producto {
     // 🧾 Datos fiscales
     @ManyToOne
     @JoinColumn(name = "unit_measure_id")
-    private UnidadMedida unidadMedida;
+    private UnidadMedida unidadMedida;  // kilo o libra
 
 
-    private Integer tributeId;
-    private Integer standardCodeId;
+    private Integer tributeId; // iva o ica
+    private Integer standardCodeId; // coloquemos "1 "
+    private Integer excluido;
 }
 
 

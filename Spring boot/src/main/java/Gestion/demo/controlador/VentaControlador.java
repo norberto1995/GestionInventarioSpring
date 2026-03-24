@@ -4,6 +4,7 @@ import Gestion.demo.dto.VentaRequestDTO;
 import Gestion.demo.factus.service.FactusFacturaService;
 import Gestion.demo.modelo.Venta;
 import Gestion.demo.servicio.VentaServicio;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,19 @@ public class VentaControlador {
     // 🔥 REGISTRAR VENTA (POS)
     @PostMapping("/ventas")
     public ResponseEntity<Venta> registrarVenta(@RequestBody VentaRequestDTO dto) {
+
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dto);
+
+            System.out.println("========= JSON RECIBIDO =========");
+            System.out.println(json);
+            System.out.println("=================================");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
         Venta venta = ventaServicio.registrarVenta(dto);
         return ResponseEntity.ok(venta);
     }

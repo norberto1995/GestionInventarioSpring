@@ -1,6 +1,8 @@
 package Gestion.demo.dto;
 
 import lombok.Data;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -9,23 +11,18 @@ public class VentaRequestDTO {
 
     private Integer clienteId;
 
-    // =========================
     // Comerciales
-    // =========================
 
-    private String vendedor;
     private Double descuento;
-    private Double pago;
+    private Double totalRecibido;
 
     private List<DetalleDTO> detalles;
 
-    // =========================
     // Facturación electrónica
-    // =========================
 
     private String paymentForm;        // 1 = contado, 2 = crédito
     private String paymentMethodCode;  // 10 = efectivo, etc
-    private Date paymentDueDate;       // obligatorio si es crédito
+    private LocalDate paymentDueDate;      // obligatorio si es crédito
     private String observation;        // opcional
 }
 

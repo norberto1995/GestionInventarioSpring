@@ -37,7 +37,7 @@ public class UsuarioControlador {
     // 🔐 OBTENER USUARIO POR ID (ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}")
-    public Usuario obtenerPorId(@PathVariable Long id) {
+    public Usuario obtenerPorId(@PathVariable Integer id) {
         return usuarioServicio.buscarPorId(id);
     }
 
@@ -45,7 +45,7 @@ public class UsuarioControlador {
     @PreAuthorize("hasRole('ADMIN')")
     @PutMapping("/{id}")
     public Usuario actualizarUsuario(
-            @PathVariable Long id,
+            @PathVariable Integer id,
             @RequestBody UsuarioUpdateDTO dto
     ) {
         return usuarioServicio.actualizarUsuario(id, dto);
@@ -54,7 +54,7 @@ public class UsuarioControlador {
     // 🔐 ELIMINAR USUARIO (ADMIN)
     @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/{id}")
-    public void eliminarUsuario(@PathVariable Long id) {
+    public void eliminarUsuario(@PathVariable Integer id) {
         usuarioServicio.eliminarUsuario(id);
     }
 }

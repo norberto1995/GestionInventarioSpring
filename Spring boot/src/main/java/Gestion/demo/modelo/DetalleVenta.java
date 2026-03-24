@@ -39,7 +39,7 @@ public class DetalleVenta {
     private Integer unitMeasureId;
     private Integer standardCodeId;
     private Integer tributeId;
-    private Boolean isExcluded;
+    private Integer isExcluded;  // Si el producto está excluido de IVA (0: no, 1: sí).
     private Double taxRate;
 }
 

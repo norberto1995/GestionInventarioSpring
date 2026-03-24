@@ -51,7 +51,7 @@ public class AuthControlador {
                 rol
         );
 
-        return ResponseEntity.ok(new LoginResponseDTO(token, rol));
+        return ResponseEntity.ok(new LoginResponseDTO(token, rol ));
 
     }
 }

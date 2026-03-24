@@ -31,7 +31,7 @@ public class FactusFacturaMapper {
 
 
         // Forma optimizada
-        String formaPago = Optional.ofNullable(venta.getPaymentForm()).orElse("1");
+        String formaPago =  venta.getPaymentForm();
         f.setPaymentForm(formaPago);
 
         f.setPaymentMethodCode(

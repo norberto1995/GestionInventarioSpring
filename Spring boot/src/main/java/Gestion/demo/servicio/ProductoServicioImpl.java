@@ -36,6 +36,23 @@ public class ProductoServicioImpl implements ProductoServicio {
             producto.setTributeId(1);
         }
 
+       if(producto.getIva()==20){
+           producto.setIva(0.0);
+           producto.setExcluido(1);
+       } else if (producto.getIva()==0){
+           producto.setIva(0.0);
+           producto.setExcluido(0);
+
+       }else if (producto.getIva()==5){
+           producto.setIva(5.0);
+           producto.setExcluido(0);
+
+       } else if (producto.getIva()==19){
+           producto.setIva(19.0);
+           producto.setExcluido(0);
+
+       }
+
         return productoRepositorio.save(producto);
     }
 

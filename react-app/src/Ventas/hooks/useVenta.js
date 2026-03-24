@@ -20,7 +20,7 @@ export default function useVenta() {
   const [pago, setPago] = useState("");
 
   const [formaPago, setFormaPago] = useState("Efectivo");
-  const [vendedor, setVendedor] = useState("Juan");
+ 
 
   const [loadingFactura, setLoadingFactura] = useState(false);
 
@@ -87,7 +87,7 @@ export default function useVenta() {
     const ventaDTO = {
       clienteId: clienteSeleccionado.idCliente,
       formaPago,
-      vendedor,
+      
       pago: pagoNum,
       descuento: descuentoNum,
       detalles: detalleFactura.map(p => ({
@@ -137,8 +137,8 @@ export default function useVenta() {
     setClienteSeleccionado,
     formaPago,
     setFormaPago,
-    vendedor,
-    setVendedor,
+    
+   
     descuento,
     setDescuento,
     pago,

@@ -35,7 +35,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     }
 
     @Override
-    public Usuario actualizarUsuario(Long id, UsuarioUpdateDTO dto) {
+    public Usuario actualizarUsuario(Integer id, UsuarioUpdateDTO dto) {
 
         Usuario usuario = buscarPorId(id);
 
@@ -46,7 +46,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     }
 
     @Override
-    public void eliminarUsuario(Long id) {
+    public void eliminarUsuario(Integer id) {
         usuarioRepo.deleteById(id);
     }
 
@@ -56,7 +56,7 @@ public class UsuarioServicioImpl implements UsuarioServicio {
     }
 
     @Override
-    public Usuario buscarPorId(Long id) {
+    public Usuario buscarPorId(Integer id) {
         return usuarioRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
     }

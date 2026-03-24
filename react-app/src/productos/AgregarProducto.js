@@ -135,6 +135,7 @@ export default function AgregarProducto() {
                       <div className="col-12">
                         <label className={labelClass}>Impuesto IVA (%)</label>
                         <select className="form-select" name="iva" value={iva} onChange={onInputChange}>
+                          <option value={20}>Excluido</option>
                           <option value={0}>Exento (0%)</option>
                           <option value={5}>Bienes procesados (5%)</option>
                           <option value={19}>Tarifa General (19%)</option>

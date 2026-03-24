@@ -4,11 +4,12 @@ import Gestion.demo.dto.DetalleDTO;
 import Gestion.demo.dto.VentaRequestDTO;
 import Gestion.demo.factus.service.FactusFacturaService;
 import Gestion.demo.modelo.*;
-import Gestion.demo.repositorio.ClienteRepositorio;
-import Gestion.demo.repositorio.ProductoRepositorio;
-import Gestion.demo.repositorio.VentaRepositorio;
+import Gestion.demo.repositorio.*;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public class VentaServicioImpl implements VentaServicio {
     private final ProductoRepositorio productoRepo;
     private final ClienteRepositorio clienteRepo;
     private final FactusFacturaService factusFacturaService;
+    private final UsuarioRepositorio usuarioRepo;
+    private final AbonoRepositorio abonoRepo;
 
     // 🔹 Ideal moverlo a configuración luego
     private final Integer NUMBERING_RANGE_ID = 8;
@@ -41,27 +44,41 @@ public class VentaServicioImpl implements VentaServicio {
         Venta venta = new Venta();
         venta.setCliente(cliente);
         venta.setFecha(new Date());
-        venta.setVendedor(dto.getVendedor());
-        venta.setDescuento(dto.getDescuento() != null ? dto.getDescuento() : 0.0);
-        venta.setPago(dto.getPago() != null ? dto.getPago() : 0.0);
-        venta.setEstadoElectronico(EstadoFacturaElectronica.PENDIENTE);
 
         // ==========================
-        // FACTUS HEADER
+        // USUARIO
         // ==========================
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String username;
+
+        if (principal instanceof UserDetails) {
+            username = ((UserDetails) principal).getUsername();
+        } else {
+            username = principal.toString();
+        }
+
+        Usuario usuario = usuarioRepo.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Usuario autenticado no encontrado en BD"));
+
+        venta.setUsuario(usuario);
+
+        // ==========================
+        // CONFIG GENERAL
+        // ==========================
+        venta.setDescuento(dto.getDescuento() != null ? dto.getDescuento() : 0.0);
+        venta.setEstadoElectronico(EstadoFacturaElectronica.PENDIENTE);
 
         venta.setNumberingRangeId(NUMBERING_RANGE_ID);
         venta.setOperationType(OPERATION_TYPE);
-        venta.setPaymentForm(dto.getPaymentForm());
+        venta.setPaymentForm(dto.getPaymentForm()); // solo DIAN
         venta.setPaymentMethodCode(dto.getPaymentMethodCode());
         venta.setPaymentDueDate(dto.getPaymentDueDate());
         venta.setReferenceCode("VENTA--" + System.currentTimeMillis());
-
+        venta.setObservation(dto.getObservation());
 
         // ==========================
         // DETALLES
         // ==========================
-
         double subtotal = 0;
         double totalIva = 0;
         List<DetalleVenta> detalles = new ArrayList<>();
@@ -75,7 +92,9 @@ public class VentaServicioImpl implements VentaServicio {
                 throw new RuntimeException("Stock insuficiente para " + p.getNombre());
             }
 
-            double precio = p.getPrecioVenta();
+            double precio =  p.getPrecioVenta();
+
+
             double ivaUnitario = precio * (p.getIva() / 100.0);
 
             subtotal += precio * d.getCantidad();
@@ -92,21 +111,11 @@ public class VentaServicioImpl implements VentaServicio {
             dv.setTotalLinea((precio + ivaUnitario) * d.getCantidad());
 
             dv.setDescuento(d.getDescuento() != null ? d.getDescuento() : 0.0);
-            dv.setIsExcluded(d.getIsExcluded() != null ? d.getIsExcluded() : false);
-            dv.setStandardCodeId(
-                    d.getStandardCodeId() != null ? d.getStandardCodeId() : p.getStandardCodeId()
-            );
-            dv.setUnitMeasureId(
-                    d.getUnitMeasureId() != null ? d.getUnitMeasureId() : p.getUnidadMedida().getId()
-            );
-            dv.setTributeId(
-                    d.getTributeId() != null ? d.getTributeId() : p.getTributeId()
-            );
-
+            dv.setIsExcluded(p.getExcluido());
+            dv.setStandardCodeId( p.getStandardCodeId());
+            dv.setUnitMeasureId(p.getUnidadMedida().getId());
+            dv.setTributeId( p.getTributeId());
             dv.setTaxRate(p.getIva());
-
-
-
 
             detalles.add(dv);
         }
@@ -114,26 +123,79 @@ public class VentaServicioImpl implements VentaServicio {
         // ==========================
         // TOTALES
         // ==========================
-
         double total = subtotal + totalIva - venta.getDescuento();
-        double cambio = venta.getPago() - total;
 
         venta.setSubtotal(subtotal);
         venta.setTotalIva(totalIva);
         venta.setTotal(total);
-        venta.setCambio(cambio);
+        double pagoRecibido = dto.getTotalRecibido();
+
+        venta.setTotalRecibido(pagoRecibido);
+
+
         venta.setDetalles(detalles);
-
         // ==========================
-        // GUARDAR
+        // GUARDAR VENTA
         // ==========================
-
         venta = ventaRepo.save(venta);
 
+
+        if("1".equals(dto.getPaymentForm())){
+
+            Abono abono = new Abono();
+            abono.setVenta(venta);
+            abono.setMonto(total);
+            abono.setRecibido(pagoRecibido);
+            abono.setCambio(pagoRecibido-total);
+            abono.setMetodoPago(dto.getPaymentMethodCode());
+            abono.setFecha(new Date());
+
+            abonoRepo.save(abono);
+            venta.setSaldoPendiente(0.0);
+        }else if("2".equals(dto.getPaymentForm()) ){
+
+            if (pagoRecibido > 0) {
+
+                Abono abono = new Abono();
+                abono.setVenta(venta);
+                abono.setMonto(total);
+                abono.setRecibido(pagoRecibido);
+                abono.setCambio(0.0);
+                abono.setMetodoPago(dto.getPaymentMethodCode());
+                abono.setFecha(new Date());
+                abonoRepo.save(abono);
+                venta.setSaldoPendiente( pagoRecibido - total);
+                }else {
+
+                Abono abono = new Abono();
+                abono.setVenta(venta);
+                abono.setMonto(total);
+                abono.setRecibido(pagoRecibido);
+                abono.setCambio(0.0);
+                abono.setMetodoPago(dto.getPaymentMethodCode());
+                abono.setFecha(new Date());
+                abonoRepo.save(abono);
+
+                    venta.setSaldoPendiente(total);
+                }
+
+            }
+
+
+
+
+
+
+
+
         // ==========================
-        // ENVIAR A FACTUS
+        // CREAR ABONO SI HAY PAGO
         // ==========================
 
+
+        // ==========================
+        // FACTUS
+        // ==========================
         try {
             factusFacturaService.emitirFacturaDesdeVenta(venta);
         } catch (Exception e) {

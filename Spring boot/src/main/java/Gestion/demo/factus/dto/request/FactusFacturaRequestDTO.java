@@ -3,6 +3,7 @@ package Gestion.demo.factus.dto.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -27,7 +28,7 @@ public class FactusFacturaRequestDTO {
     private String paymentForm; // 1 para Contado, 2 para Crédito (Default: 1).
 
     @JsonProperty("payment_due_date")
-    private Date paymentDueDate; // Fecha de vencimiento (Obligatorio si payment_form es 2).
+    private LocalDate paymentDueDate; // Fecha de vencimiento (Obligatorio si payment_form es 2).
 
     @JsonProperty("payment_method_code")
     private String paymentMethodCode; // Método de pago (Ej: 10 Efectivo, 42 Tarjeta).

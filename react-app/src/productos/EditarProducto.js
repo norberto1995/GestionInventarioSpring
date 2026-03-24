@@ -146,6 +146,7 @@ export default function EditarProducto() {
                       <div className="col-12">
                         <label className={labelClass}>IVA (%)</label>
                         <select className="form-select" name="iva" value={iva} onChange={(e) => setProducto({ ...producto, iva: Number(e.target.value) })}>
+                          <option value={20}>Excluido</option>
                           <option value={0}>Sin IVA (0%)</option>
                           <option value={5}>Tarifa Reducida (5%)</option>
                           <option value={19}>Tarifa General (19%)</option>

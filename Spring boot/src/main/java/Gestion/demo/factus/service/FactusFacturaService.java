@@ -12,8 +12,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,36 +30,21 @@ public class FactusFacturaService {
         try {
 
             // 1️⃣ Mapear venta → request Factus
-           FactusFacturaRequestDTO request = mapper.mapFromVenta(venta);
+            FactusFacturaRequestDTO request = mapper.mapFromVenta(venta);
 
-
-
-
+            // 🔥 Log del JSON enviado
             log.info("===== JSON ENVIADO A FACTUS =====");
-
             String requestJson = objectMapper
                     .writerWithDefaultPrettyPrinter()
                     .writeValueAsString(request);
-
             log.info("\n{}", requestJson);
 
-            // 2️⃣ Enviar a Factus (RAW)
-            String rawResponse = apiClient.enviarFacturaRaw(request);
+            // 2️⃣ Enviar y recibir DTO directamente
+            FactusFacturaResponseDTO response = apiClient.enviarFactura(request);
 
-            log.info("===== RAW RESPONSE FACTUS =====");
-            log.info(rawResponse);
-
-            // 3️⃣ Convertir manualmente a DTO correcto
-            FactusFacturaResponseDTO response =
-                    objectMapper.readValue(rawResponse, FactusFacturaResponseDTO.class);
-
-            log.info("===== RESPONSE MAPEADA =====");
-            log.info(objectMapper
-                    .writerWithDefaultPrettyPrinter()
-                    .writeValueAsString(response));
-
-            // 4️⃣ VALIDAR RESPUESTA CORRECTAMENTE
-            if ("Created".equalsIgnoreCase(response.getStatus())
+            // 3️⃣ VALIDAR RESPUESTA
+            if (response != null
+                    && "Created".equalsIgnoreCase(response.getStatus())
                     && response.getData() != null
                     && response.getData().getBill() != null) {
 
@@ -72,7 +55,7 @@ public class FactusFacturaService {
                 venta.setNumeroFacturaElectronica(bill.getNumber());
                 venta.setCufe(bill.getCufe());
                 venta.setQr(bill.getQr());
-                venta.setFactusUuid(null); // Factus ya no devuelve uuid en esta estructura
+                venta.setBillId(bill.getBillId());
                 venta.setMensajeFactus("Factura validada correctamente");
                 venta.setFechaValidacion(
                         java.util.Date.from(
@@ -90,9 +73,9 @@ public class FactusFacturaService {
 
                 venta.setEstadoElectronico(EstadoFacturaElectronica.ERROR);
                 venta.setErrorFactus(
-                        response.getMessage() != null
+                        response != null && response.getMessage() != null
                                 ? response.getMessage()
-                                : "Respuesta inválida de Factus: " + rawResponse
+                                : "Respuesta inválida de Factus"
                 );
 
                 log.error("Factura ERROR. Mensaje: {}", venta.getErrorFactus());
@@ -102,7 +85,7 @@ public class FactusFacturaService {
 
         } catch (Exception e) {
 
-            log.error("ERROR ENVIANDO FACTURA A a FACTUS", e);
+            log.error("ERROR ENVIANDO FACTURA A FACTUS", e);
 
             venta.setEstadoElectronico(EstadoFacturaElectronica.ERROR);
             venta.setErrorFactus(e.getMessage());
@@ -123,9 +106,6 @@ public class FactusFacturaService {
 
         emitirFacturaDesdeVenta(venta);
     }
-
-
-
 }
 
 

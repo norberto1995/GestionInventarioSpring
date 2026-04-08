@@ -1,9 +1,9 @@
 export default function TotalesFactura({ 
   subtotal, totalIva, total, cambio, 
-  pago, setPago, formatMoney, darkMode 
+  pago, setPago, formatMoney, darkMode , paymentForm
 }) {
   const pagoNum = Number(pago) || 0;
-  const pagoInsuficiente = pagoNum > 0 && pagoNum < total;
+  const pagoInsuficiente = paymentForm === 2 && pagoNum > 0 && pagoNum < total;
 
   const labelClass = `small fw-bold ${darkMode ? 'text-info opacity-75' : 'text-muted'}`;
   

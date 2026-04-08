@@ -70,6 +70,9 @@ export default function Navegacion({ cerrarMenu, darkMode }) {
           <MenuSection titulo="Ventas" icono="bi-receipt" isOpen={openMenus.facturas} onClick={() => toggleMenu("facturas")} darkMode={darkMode}>
             <SubLink to="/venta/crear" texto="Facturar" active={isActive("/venta/crear")} onClick={cerrarMenu} />
             <SubLink to="/venta/listar" texto="Historial" active={isActive("/venta/listar")} onClick={cerrarMenu} />
+
+            {/* NUEVO LINK PARA NOTAS CRÉDITO */}
+          <SubLink to="/notas-credito/listar" texto="Notas Crédito" active={isActive("/notas-credito/listar")} onClick={cerrarMenu} />
           </MenuSection>
 
           {/* SECCIÓN USUARIOS */}

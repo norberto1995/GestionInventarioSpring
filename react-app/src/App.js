@@ -23,6 +23,9 @@ import ListarVentas from "./Ventas/ListarVentas";
 
 import Dashboard from "./pages/Dashboard";  
 
+import CrearNotaCredito from "./NotaCredito/CrearNotaCredito";
+import ListarNotasCredito from "./NotaCredito/ListarNotasCredito";
+
 function App() {
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -81,6 +84,12 @@ function App() {
           {/* VENTAS */}
           <Route path="venta/crear" element={<CrearVenta />} />
           <Route path="venta/listar" element={<ListarVentas />} />
+          {/* Nueva Ruta para Nota de Crédito */}
+          <Route path="venta/nota-credito/:idVenta" element={<CrearNotaCredito />} />
+         
+           <Route path="notas-credito/listar" element={<ListarNotasCredito />} />
+
+
 
           {/* USUARIOS */}
           <Route path="usuarios/crear" element={<CrearUsuario />} />

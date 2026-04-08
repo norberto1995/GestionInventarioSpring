@@ -83,10 +83,14 @@ export default function useVenta() {
     }
 
     // 2. VALIDACIÓN DE PAGO (Efectivo recibido debe ser suficiente)
-    if (pagoNum < total) {
+
+    if(paymentForm ==="1") {
+      if (pagoNum < total) {
       alert(`El monto recibido (${pagoNum}) es menor al total de la venta (${total}). Por favor verifica el pago.`);
       return null;
     }
+    }
+   
 
     // 3. Validación de fecha para Crédito
     if (paymentForm === "2") {

@@ -80,7 +80,7 @@ public class Venta {
     private String cufe;
     private String qr;
     private Date fechaValidacion;
-    private String factusUuid; //sin utilizar por ahora
+    private Long billId; //sin utilizar por ahora
     private String observation;
 
     @Column(name = "public_url", columnDefinition = "LONGTEXT")

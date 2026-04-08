@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import api from "../api/axiosConfig";
+import { Link } from "react-router-dom";
+
 
 export default function ListarVentas() {
   const [ventas, setVentas] = useState([]);
@@ -137,6 +139,7 @@ export default function ListarVentas() {
                           {/* Ver detalle */}
                           <button
                             className="btn btn-outline-primary btn-sm"
+                            title="Ver Detalle"
                             onClick={() =>
                               setDetalleVisible(
                                 detalleVisible === venta.idVenta
@@ -163,6 +166,7 @@ export default function ListarVentas() {
                             venta.publicUrl && (
                               <button
                                 className="btn btn-outline-success btn-sm"
+                                title="PDF Factus"
                                 onClick={() =>
                                   window.open(venta.publicUrl, "_blank")
                                 }
@@ -176,6 +180,7 @@ export default function ListarVentas() {
                             venta.qr && (
                               <button
                                 className="btn btn-outline-dark btn-sm"
+                                title="Verificar DIAN"
                                 onClick={() =>
                                   window.open(venta.qr, "_blank")
                                 }
@@ -183,6 +188,17 @@ export default function ListarVentas() {
                                 <i className="bi bi-qr-code"></i>
                               </button>
                             )}
+
+                            
+                        {venta.estadoElectronico === "VALIDADA" && (
+                          <Link
+                          to={`/venta/nota-credito/${venta.idVenta}`}
+                         className="btn btn-outline-warning btn-sm"
+                          title="Crear Nota de Crédito"
+                            >
+                             <i className="bi bi-file-earmark-minus"></i>
+                           </Link>
+                             )}
                         </div>
                       </td>
                     </tr>

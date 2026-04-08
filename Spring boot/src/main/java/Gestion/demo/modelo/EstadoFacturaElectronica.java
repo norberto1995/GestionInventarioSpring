@@ -4,7 +4,8 @@ public enum EstadoFacturaElectronica {
     PENDIENTE,
 
     VALIDADA,
-    ERROR
+    ERROR ,
+    ANULADA
 }
 
 

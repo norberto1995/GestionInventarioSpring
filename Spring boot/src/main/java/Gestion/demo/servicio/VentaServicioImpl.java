@@ -164,7 +164,7 @@ public class VentaServicioImpl implements VentaServicio {
                 abono.setMetodoPago(dto.getPaymentMethodCode());
                 abono.setFecha(new Date());
                 abonoRepo.save(abono);
-                venta.setSaldoPendiente( pagoRecibido - total);
+                venta.setSaldoPendiente(  total - pagoRecibido);
                 }else {
 
                 Abono abono = new Abono();
@@ -180,18 +180,6 @@ public class VentaServicioImpl implements VentaServicio {
                 }
 
             }
-
-
-
-
-
-
-
-
-        // ==========================
-        // CREAR ABONO SI HAY PAGO
-        // ==========================
-
 
         // ==========================
         // FACTUS

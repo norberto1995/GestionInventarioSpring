@@ -41,23 +41,53 @@ export default function AgregarProducto() {
     setProducto({ ...producto, [e.target.name]: e.target.value });
   };
 
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      await api.post("/gestion-app/productos", {
-        ...producto,
-        unitMeasureId: Number(producto.unitMeasureId),
-        iva: Number(producto.iva),
-        precioCompra: Number(producto.precioCompra),
-        precioVenta: Number(producto.precioVenta),
-        stockActual: Number(producto.stockActual),
-        stockMinimo: Number(producto.stockMinimo)
-      });
-      navegacion("/productos/listar");
-    } catch (error) {
-      alert("Error al guardar el producto. Verifique los datos.");
-    }
-  };
+
+const onSubmit = async (e) => {
+  e.preventDefault();
+
+  // 🔥 VALIDACIÓN CAMPOS OBLIGATORIOS (descripcion opcional)
+  if (
+    !nombre.trim() ||
+    !codigo.trim() ||
+    !precioCompra ||
+    !precioVenta ||
+    !stockActual ||
+    !stockMinimo ||
+    iva === "" ||
+    !unitMeasureId
+  ) {
+    alert("Todos los campos son obligatorios excepto la descripción");
+    return;
+  }
+
+  // 🔥 VALIDACIÓN NUMÉRICA
+  if (
+    Number(precioCompra) <= 0 ||
+    Number(precioVenta) <= 0 ||
+    Number(stockActual) < 0 ||
+    Number(stockMinimo) < 0
+  ) {
+    alert("Valores numéricos inválidos");
+    return;
+  }
+
+  try {
+    await api.post("/gestion-app/productos", {
+      ...producto,
+      unitMeasureId: Number(producto.unitMeasureId),
+      iva: Number(producto.iva),
+      precioCompra: Number(producto.precioCompra),
+      precioVenta: Number(producto.precioVenta),
+      stockActual: Number(producto.stockActual),
+      stockMinimo: Number(producto.stockMinimo)
+    });
+    navegacion("/productos/listar");
+  } catch (error) {
+    alert("Error al guardar el producto. Verifique los datos.");
+  }
+};
+
+
 
   const labelClass = `form-label small fw-bold ${darkMode ? 'text-info opacity-75' : 'text-muted'}`;
 
